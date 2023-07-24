@@ -1,0 +1,104 @@
+{% extends "app/base.html" %}
+{% load custom_tags %}
+{% block content %}
+       <div>
+            <form action="" id="filterForm" method="get" >
+                <div class="row">
+                    <div class="col">
+                        <!-- state  -->
+                        <div class="form-group">
+                            <label for="">State</label>
+                            <select name="state" id="stateSelect" class="form-control">
+                                <option>Select State</option>
+                                {% for s in states %}
+                                    <option {% is_option_selected selected_state_id s.pk %} value="{{s.pk}}">{{s}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+        
+                    <div class="col">
+                        <!-- city  -->
+                        <div class="form-group">
+                            <label for="">City</label>
+                            <select name="city" id="citySelect" class="form-control">
+                                <option>Select City</option>
+                                {% for c in citys %}
+                                    <option {% is_option_selected selected_city_id c.pk %} value="{{c.pk}}">{{c}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <!-- Facility  -->
+                        <div class="form-group">
+                            <label for="">Facility</label>
+                            <select name="facility" id="facilitySelect" class="form-control">
+                                <option>Select Facility</option>
+                                {% for fc in facilitys %}
+                                    <option {% is_option_selected selected_facility_id fc.pk %} value="{{fc.pk}}">{{fc.title}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <a href="/" class="btn btn-primary">Reset</a>
+                </div>
+            </form>
+            <hr>
+       </div>
+        <hr>
+        <table class="table text-center table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th rowspan="2">Hospital</th>
+                    {% for f in facilitys %}
+                        <th colspan="2" >{{f.title}}</th>
+                    {% endfor %}
+                </tr>
+                <tr>  
+                    {% for f in facilitys %}
+                        <th>Total</th>
+                        <th>Available</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in hospitals %}
+                <tr>
+                    <td><a href="/hospital/{{h.id}}">{{h.name}}</a></td>
+
+                    {% get_availibilities h as availibilities %}
+                    {% for av in availibilities %}
+                     <td>{{av.total}}</td>
+                     <td class="{% get_table_class av.available %}">{{av.available}}</td>
+                    {% endfor %}
+                    
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    
+
+
+<script>
+    window.onload=function(){
+       var stateSelect = document.getElementById('stateSelect')
+       var citySelect = document.getElementById('citySelect')
+       var facilitySelect = document.getElementById('facilitySelect')
+       var form = document.getElementById('filterForm')
+
+       var formSubmit = function(){
+            form.submit()
+       }
+
+       stateSelect.onchange = formSubmit
+       citySelect.onchange = formSubmit
+       facilitySelect.onchange = formSubmit
+    }
+</script>
+
+{% endblock %}
